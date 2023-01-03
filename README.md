@@ -1,5 +1,9 @@
 # Notes
 
+Setup
+- macOS 12.1
+- IntelliJ IDEA 2022.2.2 (Community Edition)
+
 This is a simple note taking application. 
 
 A note 
@@ -16,6 +20,4 @@ Users can
 - create new notes
 - clear all existing ones.
 
-Setup
-- macOS 12.1
-- IntelliJ IDEA 2022.2.2 (Community Edition)
+
