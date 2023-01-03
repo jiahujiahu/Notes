@@ -1,8 +1,8 @@
-# Notes
-
 ## Setup
 * macOS 12.1
 * IntelliJ IDEA 2022.2.2 (Community Edition)
+
+# Notes
 
 This is a simple note taking application. 
 
