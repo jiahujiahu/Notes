@@ -15,3 +15,7 @@ Users can
 - sort notes according to their length in ascending (shortest first) or descending order (longest first)
 - create new notes
 - clear all existing ones.
+
+Setup
+- macOS 12.1
+- IntelliJ IDEA 2022.2.2 (Community Edition)
