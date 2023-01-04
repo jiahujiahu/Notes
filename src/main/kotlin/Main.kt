@@ -22,6 +22,7 @@ import java.util.Stack
 class Main : Application() {
     override fun start(stage: Stage) {
 
+
         var totalNotesNumber = 4
         var activeNotesNumber = 2
         val showArchivedCheckBox = CheckBox().apply { isSelected  = false }
@@ -31,22 +32,34 @@ class Main : Application() {
 
         val choiceBox = ChoiceBox(observableArrayList("Length(asc)","Length(desc)"))
 
+        // the toolbar contains three groups
         val groups = HBox(
             // viewsGroup
+            // to switch between the views (list and grid)
+            // consists of one label (“View:”) and two buttons (“List” and “Grid”).
             Label("View:").apply { padding = Insets(5.0,0.0,0.0,0.0) },
+            // The 2 toolbar buttons both all the same preferred width (50 units).
             listButton.apply { prefWidth = 50.0 },
             gridButton.apply { prefWidth = 50.0 },
-            Separator().apply { orientation = Orientation.VERTICAL },
+
             // archiveGroup
+            // to show or hide archived notes
+            // consists of a label (“Show archived:”) and a checkbox.
+            Separator().apply { orientation = Orientation.VERTICAL },
             Label("Show archived:").apply { padding = Insets(5.0,0.0,0.0,0.0) },
             showArchivedCheckBox.apply { padding = Insets(5.0,0.0,0.0,0.0) },
+
             // sortGroup
+            // to specify the sort order
+            // consists of a label (“Order by:”) and a choice box with the options “Length (asc)” and “Length (desc)”.
             Separator().apply { orientation = Orientation.VERTICAL },
             Label("Order by:").apply { padding = Insets(5.0,0.0,0.0,0.0) },
             choiceBox.apply { selectionModel.select(0) }
         )
+        // There are 10 units of spacing around and between all toolbar widgets.
         groups.spacing = 10.0
 
+        // the toolbar contains a button ("Clear") that is aligned to the right
         val clearButton = Button("Clear").apply {
             prefWidth = 50.0
         }
@@ -62,7 +75,7 @@ class Main : Application() {
                 AnchorPane.setBottomAnchor(this, 10.0)
             })
         }
-        val statusBar = Label("$totalNotesNumber note${if (totalNotesNumber == 1) "," else "s,"}s, " +
+        val statusBar = Label("$totalNotesNumber note${if (totalNotesNumber == 1) "," else "s,"} " +
                 "$activeNotesNumber of which ${if (activeNotesNumber == 1) "is" else "are"} active").apply {
             padding = Insets(10.0)
         }
@@ -96,20 +109,28 @@ class Main : Application() {
             text4.text.length to rectangle4
         )
 
-        val textArea = TextArea()
+        // The first item in list view is a “special note” that allows users to create a new note.
+        // It consists of a text area and a button
+        val textAreaRectangle = TextArea()
         val createRectangularButton = Button("Create")
         val rectangle0 = HBox().apply {
-            children.add(textArea.apply {
+            children.add(textAreaRectangle.apply {
+                // The text area fills the remaining space in the “special note”.
                 prefWidthProperty().bind(stage.widthProperty().subtract(120.0))
+                // “special note” height is 62.
                 maxHeight = 62.0
             })
+            // The button (“Create”) is on the right side of the “note”,
+            // 75 units wide and 42 units high.
             children.add(createRectangularButton.apply {
                 minWidth = 75.0
                 minHeight = 42.0
             })
             alignment = Pos.CENTER
+            // Spacing, padding and corner radii have a value of 10,
             padding = Insets(20.0)
             spacing = 10.0
+            // , and is of light salmon colour.
             background = Background(
                 BackgroundFill(Color.LIGHTSALMON, CornerRadii(10.0), Insets(10.0))
             )
@@ -117,17 +138,26 @@ class Main : Application() {
 
         rectangle1.apply {
             children.add(text1.apply {
+                // The notes text flows left-to-right and wraps when there is not enough horizontal space.
                 wrappingWidthProperty().bind(stage.widthProperty().subtract(130.0))
                 textAlignment = TextAlignment.LEFT
                 lineSpacing = 5.0
+                // Notes fill the available width of the application,
+                // their texts fill the available width of the note, and
+                // both are as high as they need to be to display the text.
                 HBox.setHgrow(this, Priority.ALWAYS)
             })
+            // On the right side of each note is a checkbox (“Archived”)
+            // for changing the note’s state
+            // (archived if box is checked or active if box is not checked).
             children.add(CheckBox().apply{
                 selectedProperty().bindBidirectional(checkBox1.selectedProperty())
             })
             children.add(Label("Archived"))
             padding = Insets(20.0)
+            // with spacing, padding and corner radii of 10.
             spacing = 10.0
+            // Active notes have a light yellow background
             background = Background(
                 BackgroundFill(Color.LIGHTYELLOW, CornerRadii(10.0), Insets(10.0)))
         }
@@ -145,6 +175,7 @@ class Main : Application() {
             children.add(Label("Archived"))
             padding = Insets(20.0)
             spacing = 10.0
+            // archived notes a light gray one.
             background = Background(
                 BackgroundFill(Color.LIGHTGRAY, CornerRadii(10.0), Insets(10.0)))
         }
@@ -183,6 +214,7 @@ class Main : Application() {
                 BackgroundFill(Color.LIGHTGRAY, CornerRadii(10.0), Insets(10.0)))
         }
 
+        // ln the list view, notes are displayed in the central area as rectangular areas
         val listView = VBox(rectangle0, rectangle1, rectangle3)
 
         val square1 = VBox()
@@ -204,22 +236,30 @@ class Main : Application() {
             label4.text.length to square4
         )
 
+        // The top-left item in grid view is a “special note” that allows users to create a new note.
+        //  It consists of a text area and a button, and is of light salmon colour.
         val createSquareButton = Button("Created")
+        val textAreaSquare = TextArea()
         val square0 = VBox().apply {
-            children.add(TextArea().apply{
-                textProperty().bindBidirectional(textArea.textProperty())
+            children.add(textAreaSquare.apply{
+                // The text area fills the remaining space in the “special note”.
+                textProperty().bindBidirectional(textAreaRectangle.textProperty())
                 isWrapText = true
                 maxWidth = 200.0
                 maxHeight = Double.MAX_VALUE
                 alignment = Pos.TOP_LEFT
             })
+            // The button (“Create”) is at the bottom of the “note”, 205 units wide.
+
             children.add(createSquareButton.apply {
                 prefWidth = 205.0
             })
+            // and “special note” height and width are 225.
             minWidth = 225.0
             minHeight = 225.0
             maxHeight = 225.0
             maxWidth = 225.0
+            // Spacing, padding and corner radii have a value of 10,
             padding = Insets(20.0)
             spacing = 10.0
             background = Background(
@@ -312,22 +352,32 @@ class Main : Application() {
                 textAlignment = TextAlignment.LEFT
                 lineSpacing = 5.0
             })
+            // At the bottom of the note, there is a checkbox (“Archived”)
+            // for changing the state of this note
+            // (archived if box is checked or active if box is not checked).
             children.add(HBox().apply {
-                children.add(CheckBox().apply{
+                children.add(
+                    CheckBox().apply{
                     selectedProperty().bindBidirectional(checkBox4.selectedProperty())
                 })
                 children.add(Label("Archived"))
                 spacing = 10.0
             })
+            // with height and width of 225 units,
             minWidth = 225.0
             minHeight = 225.0
             maxHeight = 225.0
             maxWidth = 225.0
+            // and spacing, padding and corner radii of 10.
             padding = Insets(20.0)
             spacing = 10.0
+            // Active notes have a light yellow background, archived notes a light gray one.
             backgroundProperty().bindBidirectional(rectangle4.backgroundProperty())
         }
 
+        // In grid view, notes are displayed in the central area as square areas
+        // Notes flow left-to-right and wrap if there is not enough horizontal space for an entire note.
+        // Notes text that is too long to be displayed in a note is cut off.
         val gridView = TilePane(Orientation.HORIZONTAL).apply {
             children.add(square0)
             children.add(square1)
@@ -338,6 +388,7 @@ class Main : Application() {
 
         var rectangleLengthAsc =  rectangleLengthMap.toSortedMap( { value, _,  -> value } )
         var rectangleLengthDesc = rectangleLengthMap.toSortedMap( { value, _,  -> -value } )
+
         var squareLengthAsc = squareLengthMap.toSortedMap( { value, _,  -> value } )
         var squareLengthDesc = squareLengthMap.toSortedMap( { value, _,  -> -value } )
 
@@ -460,7 +511,7 @@ class Main : Application() {
                     gridView.children.remove(square1)
                 }
             }
-            statusBar.text = "$totalNotesNumber note${if (totalNotesNumber == 1) "," else "s,"}s, " +
+            statusBar.text = "$totalNotesNumber note${if (totalNotesNumber == 1) "," else "s,"} " +
                     "$activeNotesNumber of which ${if (activeNotesNumber == 1) "is" else "are"} active"
         }
         checkBox2.selectedProperty().addListener{ _, _, new ->
@@ -481,7 +532,7 @@ class Main : Application() {
                     gridView.children.remove(square2)
                 }
             }
-            statusBar.text = "$totalNotesNumber note${if (totalNotesNumber == 1) "," else "s,"}s, " +
+            statusBar.text = "$totalNotesNumber note${if (totalNotesNumber == 1) "," else "s,"} " +
                     "$activeNotesNumber of which ${if (activeNotesNumber == 1) "is" else "are"} active"
         }
         checkBox3.selectedProperty().addListener{ _, _, new ->
@@ -502,7 +553,7 @@ class Main : Application() {
                     gridView.children.remove(square3)
                 }
             }
-            statusBar.text = "$totalNotesNumber note${if (totalNotesNumber == 1) "," else "s,"}s, " +
+            statusBar.text = "$totalNotesNumber note${if (totalNotesNumber == 1) "," else "s,"} " +
                     "$activeNotesNumber of which ${if (activeNotesNumber == 1) "is" else "are"} active"
         }
         checkBox4.selectedProperty().addListener{ _, _, new ->
@@ -523,10 +574,11 @@ class Main : Application() {
                     gridView.children.remove(square4)
                 }
             }
-            statusBar.text = "$totalNotesNumber note${if (totalNotesNumber == 1) "," else "s,"}s, " +
+            statusBar.text = "$totalNotesNumber note${if (totalNotesNumber == 1) "," else "s,"} " +
                     "$activeNotesNumber of which ${if (activeNotesNumber == 1) "is" else "are"} active"
         }
 
+        // In both views, if there are too many notes to fit height-wise, a scrollbar appears to view them.
         var scrollPane = ScrollPane(listView).apply {
             hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
             vbarPolicy = ScrollPane.ScrollBarPolicy.AS_NEEDED
@@ -561,17 +613,18 @@ class Main : Application() {
             squareLengthAsc.clear()
             squareLengthDesc.clear()
             // update statusbar
-            statusBar.text = "$totalNotesNumber note${if (totalNotesNumber == 1) "," else "s,"}s, " +
+            statusBar.text = "$totalNotesNumber note${if (totalNotesNumber == 1) "," else "s,"} " +
                     "$activeNotesNumber of which ${if (activeNotesNumber == 1) "is" else "are"} active"
             // special note
             listView.children.add(rectangle0)
             gridView.children.add(square0)
         }
 
+        // Clicking on it adds a new (active) note to the system.
         createRectangularButton.onAction = EventHandler {
             val newCheckBox = CheckBox().apply { isSelected = false}
             val newRectangle = HBox().apply {
-                children.add(Text(textArea.text).apply {
+                children.add(Text(textAreaRectangle.text).apply {
                     wrappingWidthProperty().bind(stage.widthProperty().subtract(130.0))
                     textAlignment = TextAlignment.LEFT
                     lineSpacing = 5.0
@@ -587,7 +640,7 @@ class Main : Application() {
                     BackgroundFill(Color.LIGHTYELLOW, CornerRadii(10.0), Insets(10.0)))
             }
             val newSquare = VBox().apply {
-                children.add(Label(textArea.text).apply{
+                children.add(Label(textAreaRectangle.text).apply{
                     isWrapText = true
                     maxWidth = 200.0
                     maxHeight = Double.MAX_VALUE
@@ -611,22 +664,30 @@ class Main : Application() {
                 spacing = 10.0
                 backgroundProperty().bindBidirectional(newRectangle.backgroundProperty())
             }
+
             listView.children.add(newRectangle)
             gridView.children.add(newSquare)
+
             ++activeNotesNumber
             activeRectangleNotes.add(newRectangle)
             activeSquareNotes.add(newSquare)
+
             ++totalNotesNumber
             totalRectangleNotes.add(newRectangle)
             totalSquareNotes.add(newSquare)
-            rectangleLengthMap[textArea.text.length] = newRectangle
-            squareLengthMap[textArea.text.length] = newSquare
-            rectangleLengthAsc =  rectangleLengthMap.toSortedMap( { value, _,  -> value } )
-            rectangleLengthDesc = rectangleLengthMap.toSortedMap( { value, _,  -> -value } )
-            squareLengthAsc = squareLengthMap.toSortedMap( { value, _,  -> value } )
-            squareLengthDesc = squareLengthMap.toSortedMap( { value, _,  -> -value } )
-            statusBar.text = "$totalNotesNumber note${if (totalNotesNumber == 1) "," else "s,"}s, " +
+
+            rectangleLengthMap[textAreaRectangle.text.length] = newRectangle
+            squareLengthMap[textAreaRectangle.text.length] = newSquare
+
+            rectangleLengthAsc =  rectangleLengthMap.toSortedMap( )
+            rectangleLengthDesc = rectangleLengthMap.toSortedMap(Comparator.reverseOrder())
+
+            squareLengthAsc = squareLengthMap.toSortedMap()
+            squareLengthDesc = squareLengthMap.toSortedMap(Comparator.reverseOrder())
+
+            statusBar.text = "$totalNotesNumber note${if (totalNotesNumber == 1) "," else "s,"} " +
                     "$activeNotesNumber of which ${if (activeNotesNumber == 1) "is" else "are"} active"
+
             newCheckBox.selectedProperty().addListener{ _, _, new ->
                 if (!new) {
                     newRectangle.background = Background(
@@ -645,15 +706,17 @@ class Main : Application() {
                         gridView.children.remove(newSquare)
                     }
                 }
-                statusBar.text = "$totalNotesNumber note${if (totalNotesNumber == 1) "," else "s,"}s, " +
+                statusBar.text = "$totalNotesNumber note${if (totalNotesNumber == 1) "," else "s,"} " +
                         "$activeNotesNumber of which ${if (activeNotesNumber == 1) "is" else "are"} active"
             }
-            textArea.text = ""
+            textAreaRectangle.text = ""
         }
+
+        // Clicking on it adds a new (active) note to the system.
         createSquareButton.onAction = EventHandler {
             val newCheckBox = CheckBox().apply { isSelected = false}
             val newRectangle = HBox().apply {
-                children.add(Text(textArea.text).apply {
+                children.add(Text(textAreaSquare.text).apply {
                     wrappingWidthProperty().bind(stage.widthProperty().subtract(130.0))
                     textAlignment = TextAlignment.LEFT
                     lineSpacing = 5.0
@@ -669,7 +732,7 @@ class Main : Application() {
                     BackgroundFill(Color.LIGHTYELLOW, CornerRadii(10.0), Insets(10.0)))
             }
             val newSquare = VBox().apply {
-                children.add(Label(textArea.text).apply{
+                children.add(Label(textAreaSquare.text).apply{
                     isWrapText = true
                     maxWidth = 200.0
                     maxHeight = Double.MAX_VALUE
@@ -701,13 +764,13 @@ class Main : Application() {
             ++totalNotesNumber
             totalRectangleNotes.add(newRectangle)
             totalSquareNotes.add(newSquare)
-            rectangleLengthMap[textArea.text.length] = newRectangle
-            squareLengthMap[textArea.text.length] = newSquare
+            rectangleLengthMap[textAreaSquare.text.length] = newRectangle
+            squareLengthMap[textAreaSquare.text.length] = newSquare
             rectangleLengthAsc =  rectangleLengthMap.toSortedMap( { value, _,  -> value } )
             rectangleLengthDesc = rectangleLengthMap.toSortedMap( { value, _,  -> -value } )
             squareLengthAsc = squareLengthMap.toSortedMap( { value, _,  -> value } )
             squareLengthDesc = squareLengthMap.toSortedMap( { value, _,  -> -value } )
-            statusBar.text = "$totalNotesNumber note${if (totalNotesNumber == 1) "," else "s,"}s, " +
+            statusBar.text = "$totalNotesNumber note${if (totalNotesNumber == 1) "," else "s,"} " +
                     "$activeNotesNumber of which ${if (activeNotesNumber == 1) "is" else "are"} active"
             newCheckBox.selectedProperty().addListener{ _, _, new ->
                 if (!new) {
@@ -727,25 +790,32 @@ class Main : Application() {
                         gridView.children.remove(newSquare)
                     }
                 }
-                statusBar.text = "$totalNotesNumber note${if (totalNotesNumber == 1) "," else "s,"}s, " +
+                statusBar.text = "$totalNotesNumber note${if (totalNotesNumber == 1) "," else "s,"} " +
                         "$activeNotesNumber of which ${if (activeNotesNumber == 1) "is" else "are"} active"
             }
-            textArea.text = ""
+            textAreaSquare.text = ""
         }
 
         val root = BorderPane()
+        // a toolbar at the top
         root.top = toolbar
+        // the main content in the center
         root.center = scrollPane
+        // a status bar at the bottom
         root.bottom = statusBar
 
         // setup and show the stage (window)
         stage.apply {
-            title = "CS349 - A1 Notes - j349hu"
+            // the application opens as a window named "Notes - j349hu"
+            title = "Notes - j349hu"
+
+            // the initial size of the application part of the window is 800 by 600 unites when opened
             scene = Scene(root, 800.0, 600.0)
+
+            // the layout is "responsive" with a minimum size of 640 by 480 units
             minWidth = 640.0
             minHeight = 480.0
         }.show()
     }
-
 }
 
