@@ -1,23 +1,16 @@
 import javafx.application.Application
-import javafx.collections.FXCollections.fill
 import javafx.collections.FXCollections.observableArrayList
 import javafx.event.EventHandler
 import javafx.geometry.Insets
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
-import javafx.geometry.Rectangle2D
-import javafx.scene.Node
 import javafx.scene.Scene
 import javafx.scene.control.*
 import javafx.scene.layout.*
 import javafx.scene.paint.Color
-import javafx.scene.shape.Rectangle
 import javafx.scene.text.*
 import javafx.scene.text.TextAlignment
 import javafx.stage.Stage
-import jdk.jfr.Event
-import java.util.SortedMap
-import java.util.Stack
 
 class Main : Application() {
     override fun start(stage: Stage) {
@@ -25,12 +18,14 @@ class Main : Application() {
 
         var totalNotesNumber = 4
         var activeNotesNumber = 2
+
+        // Changing the “Show archived” check box results in showing / hiding archived notes in the currently active view.
         val showArchivedCheckBox = CheckBox().apply { isSelected  = false }
 
         val listButton = Button("List")
         val gridButton = Button("Grid")
 
-        val choiceBox = ChoiceBox(observableArrayList("Length(asc)","Length(desc)"))
+        val choiceBoxSort = ChoiceBox(observableArrayList("Length(asc)","Length(desc)"))
 
         // the toolbar contains three groups
         val groups = HBox(
@@ -54,7 +49,7 @@ class Main : Application() {
             // consists of a label (“Order by:”) and a choice box with the options “Length (asc)” and “Length (desc)”.
             Separator().apply { orientation = Orientation.VERTICAL },
             Label("Order by:").apply { padding = Insets(5.0,0.0,0.0,0.0) },
-            choiceBox.apply { selectionModel.select(0) }
+            choiceBoxSort.apply { selectionModel.select(0) }
         )
         // There are 10 units of spacing around and between all toolbar widgets.
         groups.spacing = 10.0
@@ -75,11 +70,17 @@ class Main : Application() {
                 AnchorPane.setBottomAnchor(this, 10.0)
             })
         }
+
+        // The status bar displays the total number of notes and the number of notes that are active,
+        // e.g., “4 notes, 2 of which are active”.
+        // Please make sure that the status bar follows English grammar,
+        // e.g., “1 note, 1 of which is active”.
         val statusBar = Label("$totalNotesNumber note${if (totalNotesNumber == 1) "," else "s,"} " +
                 "$activeNotesNumber of which ${if (activeNotesNumber == 1) "is" else "are"} active").apply {
             padding = Insets(10.0)
         }
 
+        // Please make sure that your application starts with at least four notes already displayed
         val text1 = Text("This is a short note!")
         val text2 = Text("This note is slightly longer, but still manageable...")
         val text3 = Text("Active notes have a light yellow background, archived notes a light gray one.")
@@ -89,7 +90,7 @@ class Main : Application() {
                 "irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. " +
                 "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit " +
                 "anim id est laborum.")
-
+        // , at least one of them being active and one of them being archived.
         val checkBox1 = CheckBox().apply{ isSelected = false }
         val checkBox2 = CheckBox().apply { isSelected = true }
         val checkBox3 = CheckBox().apply { isSelected = false }
@@ -250,7 +251,6 @@ class Main : Application() {
                 alignment = Pos.TOP_LEFT
             })
             // The button (“Create”) is at the bottom of the “note”, 205 units wide.
-
             children.add(createSquareButton.apply {
                 prefWidth = 205.0
             })
@@ -386,22 +386,22 @@ class Main : Application() {
             maxWidthProperty().bind(stage.widthProperty())
         }
 
-        var rectangleLengthAsc =  rectangleLengthMap.toSortedMap( { value, _,  -> value } )
-        var rectangleLengthDesc = rectangleLengthMap.toSortedMap( { value, _,  -> -value } )
+        var rectangleLengthAsc =  rectangleLengthMap.toSortedMap()
+        var rectangleLengthDesc = rectangleLengthMap.toSortedMap(Comparator.reverseOrder())
 
-        var squareLengthAsc = squareLengthMap.toSortedMap( { value, _,  -> value } )
-        var squareLengthDesc = squareLengthMap.toSortedMap( { value, _,  -> -value } )
+        var squareLengthAsc = squareLengthMap.toSortedMap()
+        var squareLengthDesc = squareLengthMap.toSortedMap(Comparator.reverseOrder())
 
         showArchivedCheckBox.selectedProperty().addListener { _, _, new ->
-            if (new) {
+            if (new) { // showing archived notes in the currently active view
                 listView.children.clear()
                 listView.children.add(rectangle0)
                 gridView.children.clear()
                 gridView.children.add(square0)
-                if (choiceBox.selectionModel.isSelected(0)) {
-                    rectangleLengthAsc.forEach() { _, rectangular ->
-                        if (rectangular in totalRectangleNotes) {
-                            listView.children.add(rectangular)
+                if (choiceBoxSort.selectionModel.isSelected(0)) { // asc
+                    rectangleLengthAsc.forEach() { _, rectangle ->
+                        if (rectangle in totalRectangleNotes) {
+                            listView.children.add(rectangle)
                         }
                     }
                     squareLengthAsc.forEach() { _, square ->
@@ -409,10 +409,10 @@ class Main : Application() {
                             gridView.children.add(square)
                         }
                     }
-                } else if (choiceBox.selectionModel.isSelected(1)) {
-                    rectangleLengthDesc.forEach() { _, rectangular ->
-                        if (rectangular in totalRectangleNotes) {
-                            listView.children.add(rectangular)
+                } else if (choiceBoxSort.selectionModel.isSelected(1)) { //desc
+                    rectangleLengthDesc.forEach() { _, rectangle->
+                        if (rectangle in totalRectangleNotes) {
+                            listView.children.add(rectangle)
                         }
                     }
                     squareLengthDesc.forEach() { _, square ->
@@ -421,7 +421,7 @@ class Main : Application() {
                         }
                     }
                 }
-            } else {
+            } else { // hiding archived notes in the currently active view
                 for (rectangle in totalRectangleNotes) {
                     if (rectangle !in activeRectangleNotes) {
                         listView.children.remove(rectangle)
@@ -435,20 +435,22 @@ class Main : Application() {
             }
         }
 
-        choiceBox.selectionModel.selectedItemProperty().addListener { _, _, new ->
+        // Selecting a different “Order by” from the choice box
+        // results in re-ordering the notes in the currently active view.
+        choiceBoxSort.selectionModel.selectedItemProperty().addListener { _, _, new ->
             listView.children.clear()
             listView.children.add(rectangle0)
             gridView.children.clear()
             gridView.children.add(square0)
             if (new == "Length(asc)") {
-                rectangleLengthAsc.forEach() { _, rectangular ->
+                rectangleLengthAsc.forEach() { _, rectangle ->
                     if (showArchivedCheckBox.isSelected) {
-                        if (rectangular in totalRectangleNotes) {
-                            listView.children.add(rectangular)
+                        if (rectangle in totalRectangleNotes) {
+                            listView.children.add(rectangle)
                         }
                     } else {
-                        if (rectangular in activeRectangleNotes) {
-                            listView.children.add(rectangular)
+                        if (rectangle in activeRectangleNotes) {
+                            listView.children.add(rectangle)
                         }
                     }
                 }
@@ -459,19 +461,19 @@ class Main : Application() {
                         }
                     } else {
                         if (square in activeSquareNotes) {
-                            listView.children.add(square)
+                            gridView.children.add(square)
                         }
                     }
                 }
             } else if (new == "Length(desc)") {
-                rectangleLengthDesc.forEach() { _, rectangular ->
+                rectangleLengthDesc.forEach() { _, rectangle ->
                     if (showArchivedCheckBox.isSelected) {
-                        if (rectangular in totalRectangleNotes) {
-                            listView.children.add(rectangular)
+                        if (rectangle in totalRectangleNotes) {
+                            listView.children.add(rectangle)
                         }
                     } else {
-                        if (rectangular in activeRectangleNotes) {
-                            listView.children.add(rectangular)
+                        if (rectangle in activeRectangleNotes) {
+                            listView.children.add(rectangle)
                         }
                     }
                 }
@@ -482,6 +484,7 @@ class Main : Application() {
                         }
                     } else {
                         if (square in activeSquareNotes) {
+
                             gridView.children.add(square)
                         }
                     }
@@ -584,6 +587,9 @@ class Main : Application() {
             vbarPolicy = ScrollPane.ScrollBarPolicy.AS_NEEDED
         }
 
+        // In the toolbar, the view selection button associated with the currently active grid is grayed out.
+        // Clicking on the other button changes the view accordingly.
+        // The setting regarding showing / hiding archived notes and note order must be maintained when switching between views.
         listButton.onAction = EventHandler {
             listButton.setDisable(!listButton.isDisable())
             gridButton.setDisable(!listButton.isDisable())
@@ -595,29 +601,35 @@ class Main : Application() {
             scrollPane.content = gridView
         }
 
+        // Clicking on the “Clear” button removes all notes from the system
         clearButton.onAction = EventHandler {
+            // updates the current view
             listView.children.clear()
             gridView.children.clear()
+            // special note
+            listView.children.add(rectangle0)
+            gridView.children.add(square0)
+
             totalNotesNumber = 0
             activeNotesNumber = 0
+
             // retangle
             totalRectangleNotes.clear()
-            totalSquareNotes.clear()
+            activeRectangleNotes.clear()
             rectangleLengthMap.clear()
             rectangleLengthAsc.clear()
             rectangleLengthDesc.clear()
+
             // square
             totalSquareNotes.clear()
             activeSquareNotes.clear()
             squareLengthMap.clear()
             squareLengthAsc.clear()
             squareLengthDesc.clear()
-            // update statusbar
+
+            // update the status bar
             statusBar.text = "$totalNotesNumber note${if (totalNotesNumber == 1) "," else "s,"} " +
                     "$activeNotesNumber of which ${if (activeNotesNumber == 1) "is" else "are"} active"
-            // special note
-            listView.children.add(rectangle0)
-            gridView.children.add(square0)
         }
 
         // Clicking on it adds a new (active) note to the system.
@@ -756,20 +768,27 @@ class Main : Application() {
                 spacing = 10.0
                 backgroundProperty().bindBidirectional(newRectangle.backgroundProperty())
             }
+
             listView.children.add(newRectangle)
             gridView.children.add(newSquare)
+
             ++activeNotesNumber
             activeRectangleNotes.add(newRectangle)
             activeSquareNotes.add(newSquare)
+
             ++totalNotesNumber
             totalRectangleNotes.add(newRectangle)
             totalSquareNotes.add(newSquare)
+
             rectangleLengthMap[textAreaSquare.text.length] = newRectangle
             squareLengthMap[textAreaSquare.text.length] = newSquare
-            rectangleLengthAsc =  rectangleLengthMap.toSortedMap( { value, _,  -> value } )
-            rectangleLengthDesc = rectangleLengthMap.toSortedMap( { value, _,  -> -value } )
-            squareLengthAsc = squareLengthMap.toSortedMap( { value, _,  -> value } )
-            squareLengthDesc = squareLengthMap.toSortedMap( { value, _,  -> -value } )
+
+            rectangleLengthAsc =  rectangleLengthMap.toSortedMap()
+            rectangleLengthDesc = rectangleLengthMap.toSortedMap(Comparator.reverseOrder())
+
+            squareLengthAsc = squareLengthMap.toSortedMap()
+            squareLengthDesc = squareLengthMap.toSortedMap(Comparator.reverseOrder())
+
             statusBar.text = "$totalNotesNumber note${if (totalNotesNumber == 1) "," else "s,"} " +
                     "$activeNotesNumber of which ${if (activeNotesNumber == 1) "is" else "are"} active"
             newCheckBox.selectedProperty().addListener{ _, _, new ->
@@ -796,6 +815,7 @@ class Main : Application() {
             textAreaSquare.text = ""
         }
 
+        // The toolbar and the status bar are visually separated from the main views.
         val root = BorderPane()
         // a toolbar at the top
         root.top = toolbar
