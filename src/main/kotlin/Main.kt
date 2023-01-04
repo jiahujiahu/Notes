@@ -91,10 +91,10 @@ class Main : Application() {
                 "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit " +
                 "anim id est laborum.")
         // , at least one of them being active and one of them being archived.
-        val checkBox1 = CheckBox().apply{ isSelected = false }
-        val checkBox2 = CheckBox().apply { isSelected = true }
-        val checkBox3 = CheckBox().apply { isSelected = false }
-        val checkBox4 = CheckBox().apply { isSelected = true }
+        var checkBox1 = CheckBox().apply{ isSelected = false }
+        var checkBox2 = CheckBox().apply { isSelected = true }
+        var checkBox3 = CheckBox().apply { isSelected = false }
+        var checkBox4 = CheckBox().apply { isSelected = true }
 
         val rectangle1 = HBox()
         val rectangle2 = HBox()
@@ -356,8 +356,7 @@ class Main : Application() {
             // for changing the state of this note
             // (archived if box is checked or active if box is not checked).
             children.add(HBox().apply {
-                children.add(
-                    CheckBox().apply{
+                children.add(CheckBox().apply{
                     selectedProperty().bindBidirectional(checkBox4.selectedProperty())
                 })
                 children.add(Label("Archived"))
@@ -493,7 +492,7 @@ class Main : Application() {
         }
 
         checkBox1.selectedProperty().addListener{ _, _, new ->
-            if (!new) {
+            if (!new) { // show
                 rectangle1.background = Background(
                     BackgroundFill(Color.LIGHTYELLOW, CornerRadii(10.0), Insets(10.0)))
                 square1.background = Background(
@@ -501,7 +500,7 @@ class Main : Application() {
                 ++activeNotesNumber
                 activeRectangleNotes.add(rectangle1)
                 activeSquareNotes.add(square1)
-            } else {
+            } else { // hide
                 rectangle1.background = Background(
                     BackgroundFill(Color.LIGHTGRAY, CornerRadii(10.0), Insets(10.0)))
                 square1.background = Background(
@@ -509,7 +508,7 @@ class Main : Application() {
                 --activeNotesNumber
                 activeRectangleNotes.remove(rectangle1)
                 activeSquareNotes.remove(square1)
-                if (!showArchivedCheckBox.isSelected) {
+                if (!showArchivedCheckBox.isSelected) { // hide
                     listView.children.remove(rectangle1)
                     gridView.children.remove(square1)
                 }
@@ -530,7 +529,7 @@ class Main : Application() {
                 --activeNotesNumber
                 activeRectangleNotes.remove(rectangle2)
                 activeSquareNotes.remove(square2)
-                if (!showArchivedCheckBox.isSelected) {
+                if (!showArchivedCheckBox.isSelected) { // hide
                     listView.children.remove(rectangle2)
                     gridView.children.remove(square2)
                 }
@@ -634,8 +633,8 @@ class Main : Application() {
 
         // Clicking on it adds a new (active) note to the system.
         createRectangularButton.onAction = EventHandler {
-            val newCheckBox = CheckBox().apply { isSelected = false}
-            val newRectangle = HBox().apply {
+            var newCheckBox = CheckBox().apply { isSelected = false}
+            var newRectangle = HBox().apply {
                 children.add(Text(textAreaRectangle.text).apply {
                     wrappingWidthProperty().bind(stage.widthProperty().subtract(130.0))
                     textAlignment = TextAlignment.LEFT
@@ -701,13 +700,13 @@ class Main : Application() {
                     "$activeNotesNumber of which ${if (activeNotesNumber == 1) "is" else "are"} active"
 
             newCheckBox.selectedProperty().addListener{ _, _, new ->
-                if (!new) {
+                if (!new) { // not archived
                     newRectangle.background = Background(
                         BackgroundFill(Color.LIGHTYELLOW, CornerRadii(10.0), Insets(10.0)))
                     ++activeNotesNumber
                     activeRectangleNotes.add(newRectangle)
                     activeSquareNotes.add(newSquare)
-                } else {
+                } else { // archived
                     newRectangle.background = Background(
                         BackgroundFill(Color.LIGHTGRAY, CornerRadii(10.0), Insets(10.0)))
                     --activeNotesNumber
