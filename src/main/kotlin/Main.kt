@@ -330,8 +330,8 @@ class Main : Application() {
                 lineSpacing = 5.0
             })
             children.add(HBox().apply {
-                children.add(checkBoxSquare1)
-                children.add(archiveLabelSquare1)
+                children.add(checkBoxSquare2)
+                children.add(archiveLabelSquare2)
                 spacing = 10.0
             })
             minWidth = 225.0
@@ -353,8 +353,8 @@ class Main : Application() {
                 lineSpacing = 5.0
             })
             children.add(HBox().apply {
-                children.add(checkBoxSquare1)
-                children.add(archiveLabelSquare1)
+                children.add(checkBoxSquare3)
+                children.add(archiveLabelSquare3)
                 spacing = 10.0
             })
             minWidth = 225.0
@@ -379,8 +379,8 @@ class Main : Application() {
             // for changing the state of this note
             // (archived if box is checked or active if box is not checked).
             children.add(HBox().apply {
-                children.add(checkBoxSquare1)
-                children.add(archiveLabelSquare1)
+                children.add(checkBoxSquare4)
+                children.add(archiveLabelSquare4)
                 spacing = 10.0
             })
             // with height and width of 225 units,
@@ -671,7 +671,7 @@ class Main : Application() {
                 add(textAreaRectangleEdit2.apply{
                     prefWidthProperty().bind(stage.widthProperty().subtract(220.0))
                     maxHeight = 62.0
-                    text = text1.text
+                    text = text2.text
                 })
                 add(saveButton2)
                 add(discardButton2)
@@ -726,7 +726,7 @@ class Main : Application() {
                 add(textAreaRectangleEdit3.apply{
                     prefWidthProperty().bind(stage.widthProperty().subtract(220.0))
                     maxHeight = 62.0
-                    text = text1.text
+                    text = text3.text
                 })
                 add(saveButton3)
                 add(discardButton3)
@@ -781,7 +781,7 @@ class Main : Application() {
                 add(textAreaRectangleEdit1.apply{
                     prefWidthProperty().bind(stage.widthProperty().subtract(220.0))
                     maxHeight = 62.0
-                    text = text1.text
+                    text = text4.text
                 })
                 add(saveButton4)
                 add(discardButton4)
@@ -986,7 +986,7 @@ class Main : Application() {
                     add(textAreaRectangleEditNew.apply{
                         prefWidthProperty().bind(stage.widthProperty().subtract(220.0))
                         maxHeight = 62.0
-                        text = text1.text
+                        text = textNew.text
                     })
                     add(saveButtonNew)
                     add(discardButtonNew)
