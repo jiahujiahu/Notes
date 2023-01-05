@@ -13,8 +13,8 @@ import javafx.scene.text.TextAlignment
 import javafx.stage.Stage
 
 class Main : Application() {
-    override fun start(stage: Stage) {
 
+    override fun start(stage: Stage) {
 
         var totalNotesNumber = 4
         var activeNotesNumber = 2
@@ -91,39 +91,58 @@ class Main : Application() {
                 "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit " +
                 "anim id est laborum.")
         // , at least one of them being active and one of them being archived.
-        var checkBox1 = CheckBox().apply{ isSelected = false }
-        var checkBox2 = CheckBox().apply { isSelected = true }
-        var checkBox3 = CheckBox().apply { isSelected = false }
-        var checkBox4 = CheckBox().apply { isSelected = true }
+
+        val checkBox1 = CheckBox().apply{ isSelected = false }
+        val checkBox2 = CheckBox().apply { isSelected = true }
+        val checkBox3 = CheckBox().apply { isSelected = false }
+        val checkBox4 = CheckBox().apply { isSelected = true }
+
+        val checkBoxRectangle1 = CheckBox().apply{
+            selectedProperty().bindBidirectional(checkBox1.selectedProperty())
+        }
+        val checkBoxRectangle2 = CheckBox().apply{
+            selectedProperty().bindBidirectional(checkBox2.selectedProperty())
+        }
+        val checkBoxRectangle3 = CheckBox().apply{
+            selectedProperty().bindBidirectional(checkBox3.selectedProperty())
+        }
+        val checkBoxRectangle4 = CheckBox().apply{
+            selectedProperty().bindBidirectional(checkBox4.selectedProperty())
+        }
+
+        val archiveLabelRectangle1 = Label("Archived")
+        val archiveLabelRectangle2 = Label("Archived")
+        val archiveLabelRectangle3 = Label("Archived")
+        val archiveLabelRectangle4 = Label("Archived")
 
         val rectangle1 = HBox()
         val rectangle2 = HBox()
         val rectangle3 = HBox()
         val rectangle4 = HBox()
 
-        var totalRectangleNotes = mutableListOf(rectangle1, rectangle2, rectangle3, rectangle4)
-        var activeRectangleNotes = mutableListOf(rectangle1, rectangle3)
-        var rectangleLengthMap = mutableMapOf(
-            text1.text.length to rectangle1,
-            text2.text.length to rectangle2,
-            text3.text.length to rectangle3,
-            text4.text.length to rectangle4
+        val totalRectangleNotes = mutableListOf(rectangle1, rectangle2, rectangle3, rectangle4)
+        val activeRectangleNotes = mutableListOf(rectangle1, rectangle3)
+        val rectangleLengthMap = mutableMapOf(
+            rectangle1 to text1.text.length,
+            rectangle2 to text2.text.length,
+            rectangle3 to text3.text.length,
+            rectangle4 to text4.text.length
         )
 
         // The first item in list view is a “special note” that allows users to create a new note.
         // It consists of a text area and a button
-        val textAreaRectangle = TextArea()
-        val createRectangularButton = Button("Create")
+        val textAreaRectangleCreate = TextArea()
+        val createRectangleButton = Button("Create")
         val rectangle0 = HBox().apply {
-            children.add(textAreaRectangle.apply {
+            children.add(textAreaRectangleCreate.apply {
                 // The text area fills the remaining space in the “special note”.
-                prefWidthProperty().bind(stage.widthProperty().subtract(120.0))
+                prefWidthProperty().bind(stage.widthProperty().subtract(130.0))
                 // “special note” height is 62.
                 maxHeight = 62.0
             })
             // The button (“Create”) is on the right side of the “note”,
             // 75 units wide and 42 units high.
-            children.add(createRectangularButton.apply {
+            children.add(createRectangleButton.apply {
                 minWidth = 75.0
                 minHeight = 42.0
             })
@@ -151,10 +170,8 @@ class Main : Application() {
             // On the right side of each note is a checkbox (“Archived”)
             // for changing the note’s state
             // (archived if box is checked or active if box is not checked).
-            children.add(CheckBox().apply{
-                selectedProperty().bindBidirectional(checkBox1.selectedProperty())
-            })
-            children.add(Label("Archived"))
+            children.add(checkBoxRectangle1)
+            children.add(archiveLabelRectangle1)
             padding = Insets(20.0)
             // with spacing, padding and corner radii of 10.
             spacing = 10.0
@@ -170,10 +187,8 @@ class Main : Application() {
                 lineSpacing = 5.0
                 HBox.setHgrow(this, Priority.ALWAYS)
             })
-            children.add(CheckBox().apply{
-                selectedProperty().bindBidirectional(checkBox2.selectedProperty())
-            })
-            children.add(Label("Archived"))
+            children.add(checkBoxRectangle2)
+            children.add(archiveLabelRectangle2)
             padding = Insets(20.0)
             spacing = 10.0
             // archived notes a light gray one.
@@ -188,10 +203,8 @@ class Main : Application() {
                 lineSpacing = 5.0
                 HBox.setHgrow(this, Priority.ALWAYS)
             })
-            children.add(CheckBox().apply{
-                selectedProperty().bindBidirectional(checkBox3.selectedProperty())
-            })
-            children.add(Label("Archived"))
+            children.add(checkBoxRectangle3)
+            children.add(archiveLabelRectangle3)
             padding = Insets(20.0)
             spacing = 10.0
             background = Background(
@@ -205,10 +218,8 @@ class Main : Application() {
                 lineSpacing = 5.0
                 HBox.setHgrow(this, Priority.ALWAYS)
             })
-            children.add(CheckBox().apply{
-                selectedProperty().bindBidirectional(checkBox4.selectedProperty())
-            })
-            children.add(Label("Archived"))
+            children.add(checkBoxRectangle4)
+            children.add(archiveLabelRectangle4)
             padding = Insets(20.0)
             spacing = 10.0
             background = Background(
@@ -217,6 +228,24 @@ class Main : Application() {
 
         // ln the list view, notes are displayed in the central area as rectangular areas
         val listView = VBox(rectangle0, rectangle1, rectangle3)
+
+        val checkBoxSquare1 = CheckBox().apply{
+            selectedProperty().bindBidirectional(checkBox1.selectedProperty())
+        }
+        val checkBoxSquare2 = CheckBox().apply{
+            selectedProperty().bindBidirectional(checkBox2.selectedProperty())
+        }
+        val checkBoxSquare3 = CheckBox().apply{
+            selectedProperty().bindBidirectional(checkBox3.selectedProperty())
+        }
+        val checkBoxSquare4 = CheckBox().apply{
+            selectedProperty().bindBidirectional(checkBox4.selectedProperty())
+        }
+
+        val archiveLabelSquare1 = Label("Archived")
+        val archiveLabelSquare2 = Label("Archived")
+        val archiveLabelSquare3 = Label("Archived")
+        val archiveLabelSquare4 = Label("Archived")
 
         val square1 = VBox()
         val square2 = VBox()
@@ -231,20 +260,20 @@ class Main : Application() {
         var totalSquareNotes = mutableListOf(square1, square2, square3, square4)
         var activeSquareNotes = mutableListOf(square1, square3)
         var squareLengthMap = mutableMapOf(
-            label1.text.length to square1,
-            label2.text.length to square2,
-            label3.text.length to square3,
-            label4.text.length to square4
+            square1 to label1.text.length,
+            square2 to label2.text.length,
+            square3 to label3.text.length,
+            square4 to label4.text.length
         )
 
         // The top-left item in grid view is a “special note” that allows users to create a new note.
         //  It consists of a text area and a button, and is of light salmon colour.
         val createSquareButton = Button("Created")
-        val textAreaSquare = TextArea()
+        val textAreaSquareCreate = TextArea()
         val square0 = VBox().apply {
-            children.add(textAreaSquare.apply{
+            children.add(textAreaSquareCreate.apply{
                 // The text area fills the remaining space in the “special note”.
-                textProperty().bindBidirectional(textAreaRectangle.textProperty())
+                textProperty().bindBidirectional(textAreaRectangleCreate.textProperty())
                 isWrapText = true
                 maxWidth = 200.0
                 maxHeight = Double.MAX_VALUE
@@ -278,10 +307,8 @@ class Main : Application() {
                 lineSpacing = 5.0
             })
             children.add(HBox().apply {
-                children.add(CheckBox().apply{
-                    selectedProperty().bindBidirectional(checkBox1.selectedProperty())
-                })
-                children.add(Label("Archived"))
+                children.add(checkBoxSquare1)
+                children.add(archiveLabelSquare1)
                 spacing = 10.0
             })
             minWidth = 225.0
@@ -303,10 +330,8 @@ class Main : Application() {
                 lineSpacing = 5.0
             })
             children.add(HBox().apply {
-                children.add(CheckBox().apply{
-                    selectedProperty().bindBidirectional(checkBox2.selectedProperty())
-                })
-                children.add(Label("Archived"))
+                children.add(checkBoxSquare1)
+                children.add(archiveLabelSquare1)
                 spacing = 10.0
             })
             minWidth = 225.0
@@ -328,10 +353,8 @@ class Main : Application() {
                 lineSpacing = 5.0
             })
             children.add(HBox().apply {
-                children.add(CheckBox().apply{
-                    selectedProperty().bindBidirectional(checkBox3.selectedProperty())
-                })
-                children.add(Label("Archived"))
+                children.add(checkBoxSquare1)
+                children.add(archiveLabelSquare1)
                 spacing = 10.0
             })
             minWidth = 225.0
@@ -356,10 +379,8 @@ class Main : Application() {
             // for changing the state of this note
             // (archived if box is checked or active if box is not checked).
             children.add(HBox().apply {
-                children.add(CheckBox().apply{
-                    selectedProperty().bindBidirectional(checkBox4.selectedProperty())
-                })
-                children.add(Label("Archived"))
+                children.add(checkBoxSquare1)
+                children.add(archiveLabelSquare1)
                 spacing = 10.0
             })
             // with height and width of 225 units,
@@ -385,11 +406,11 @@ class Main : Application() {
             maxWidthProperty().bind(stage.widthProperty())
         }
 
-        var rectangleLengthAsc =  rectangleLengthMap.toSortedMap()
-        var rectangleLengthDesc = rectangleLengthMap.toSortedMap(Comparator.reverseOrder())
+        var rectangleLengthAsc =  rectangleLengthMap.toList().sortedBy{ (k,v) -> v}.toMap()
+        var rectangleLengthDesc = rectangleLengthMap.toList().sortedByDescending{ (k,v) -> v}.toMap()
 
-        var squareLengthAsc = squareLengthMap.toSortedMap()
-        var squareLengthDesc = squareLengthMap.toSortedMap(Comparator.reverseOrder())
+        var squareLengthAsc =  squareLengthMap.toList().sortedBy{ (k,v) -> v}.toMap()
+        var squareLengthDesc = squareLengthMap.toList().sortedByDescending{ (k,v) -> v}.toMap()
 
         showArchivedCheckBox.selectedProperty().addListener { _, _, new ->
             if (new) { // showing archived notes in the currently active view
@@ -398,23 +419,23 @@ class Main : Application() {
                 gridView.children.clear()
                 gridView.children.add(square0)
                 if (choiceBoxSort.selectionModel.isSelected(0)) { // asc
-                    rectangleLengthAsc.forEach() { _, rectangle ->
+                    rectangleLengthAsc.forEach() { (rectangle, _) ->
                         if (rectangle in totalRectangleNotes) {
                             listView.children.add(rectangle)
                         }
                     }
-                    squareLengthAsc.forEach() { _, square ->
+                    squareLengthAsc.forEach() { (square, _) ->
                         if (square in totalSquareNotes) {
                             gridView.children.add(square)
                         }
                     }
                 } else if (choiceBoxSort.selectionModel.isSelected(1)) { //desc
-                    rectangleLengthDesc.forEach() { _, rectangle->
+                    rectangleLengthDesc.forEach() { (rectangle, _) ->
                         if (rectangle in totalRectangleNotes) {
                             listView.children.add(rectangle)
                         }
                     }
-                    squareLengthDesc.forEach() { _, square ->
+                    squareLengthDesc.forEach() { (square, _) ->
                         if (square in totalSquareNotes) {
                             gridView.children.add(square)
                         }
@@ -442,7 +463,7 @@ class Main : Application() {
             gridView.children.clear()
             gridView.children.add(square0)
             if (new == "Length(asc)") {
-                rectangleLengthAsc.forEach() { _, rectangle ->
+                rectangleLengthAsc.forEach() { (rectangle, _) ->
                     if (showArchivedCheckBox.isSelected) {
                         if (rectangle in totalRectangleNotes) {
                             listView.children.add(rectangle)
@@ -453,7 +474,7 @@ class Main : Application() {
                         }
                     }
                 }
-                squareLengthAsc.forEach() { _, square ->
+                squareLengthAsc.forEach() { (square, _) ->
                     if (showArchivedCheckBox.isSelected) {
                         if (square in totalSquareNotes) {
                             gridView.children.add(square)
@@ -465,7 +486,7 @@ class Main : Application() {
                     }
                 }
             } else if (new == "Length(desc)") {
-                rectangleLengthDesc.forEach() { _, rectangle ->
+                rectangleLengthDesc.forEach() { (rectangle, _) ->
                     if (showArchivedCheckBox.isSelected) {
                         if (rectangle in totalRectangleNotes) {
                             listView.children.add(rectangle)
@@ -476,14 +497,13 @@ class Main : Application() {
                         }
                     }
                 }
-                squareLengthDesc.forEach() { _, square ->
+                squareLengthDesc.forEach() { (square, _) ->
                     if (showArchivedCheckBox.isSelected) {
                         if (square in totalSquareNotes) {
                             gridView.children.add(square)
                         }
                     } else {
                         if (square in activeSquareNotes) {
-
                             gridView.children.add(square)
                         }
                     }
@@ -580,6 +600,226 @@ class Main : Application() {
                     "$activeNotesNumber of which ${if (activeNotesNumber == 1) "is" else "are"} active"
         }
 
+        val textAreaRectangleEdit1 = TextArea()
+        val saveButton1 = Button("Save").apply {
+            minWidth = 75.0
+            minHeight = 42.0
+        }
+        val discardButton1 = Button("Discard").apply {
+            minWidth = 75.0
+            minHeight = 42.0
+        }
+
+        rectangle1.onMouseClicked = EventHandler {
+            rectangle1.children.remove(text1)
+            rectangle1.children.remove(checkBoxRectangle1)
+            rectangle1.children.remove(archiveLabelRectangle1)
+            rectangle1.children.add(textAreaRectangleEdit1.apply{
+                prefWidthProperty().bind(stage.widthProperty().subtract(220.0))
+                maxHeight = 62.0
+                text = text1.text
+            })
+            rectangle1.children.add(saveButton1)
+            rectangle1.children.add(discardButton1)
+        }
+
+        saveButton1.onAction = EventHandler {
+            text1.text = textAreaRectangleEdit1.text
+            label1.text = textAreaRectangleEdit1.text
+            textAreaRectangleEdit1.text = ""
+            rectangle1.children.apply {
+                remove(textAreaRectangleEdit1)
+                remove(saveButton1)
+                remove(discardButton1)
+                add(text1)
+                add(checkBoxRectangle1)
+                add(archiveLabelRectangle1)
+            }
+            rectangleLengthMap[rectangle1] = text1.text.length
+            squareLengthMap[square1] = label1.text.length
+            rectangleLengthAsc =  rectangleLengthMap.toList().sortedBy{ (k,v) -> v}.toMap()
+            rectangleLengthDesc = rectangleLengthMap.toList().sortedByDescending{ (k,v) -> v}.toMap()
+            squareLengthAsc =  squareLengthMap.toList().sortedBy{ (k,v) -> v}.toMap()
+            squareLengthDesc = squareLengthMap.toList().sortedByDescending{ (k,v) -> v}.toMap()
+        }
+
+        discardButton1.onAction = EventHandler {
+            rectangle1.children.apply{
+                remove(textAreaRectangleEdit1)
+                remove(saveButton1)
+                remove(discardButton1)
+                add(text1)
+                add(checkBoxRectangle1)
+                add(archiveLabelRectangle1)
+            }
+        }
+
+        val textAreaRectangleEdit2 = TextArea()
+        val saveButton2 = Button("Save").apply {
+            minWidth = 75.0
+            minHeight = 42.0
+        }
+        val discardButton2 = Button("Discard").apply {
+            minWidth = 75.0
+            minHeight = 42.0
+        }
+        rectangle2.onMouseClicked = EventHandler {
+            rectangle2.children.apply {
+                remove(text2)
+                remove(checkBoxRectangle2)
+                remove(archiveLabelRectangle2)
+                add(textAreaRectangleEdit2.apply{
+                    prefWidthProperty().bind(stage.widthProperty().subtract(220.0))
+                    maxHeight = 62.0
+                    text = text1.text
+                })
+                add(saveButton2)
+                add(discardButton2)
+            }
+        }
+
+        saveButton2.onAction = EventHandler {
+            text2.text = textAreaRectangleEdit2.text
+            label2.text = textAreaRectangleEdit2.text
+            textAreaRectangleEdit2.text = ""
+            rectangle2.children.apply {
+                remove(textAreaRectangleEdit2)
+                remove(saveButton2)
+                remove(discardButton2)
+                add(text2)
+                add(checkBoxRectangle2)
+                add(archiveLabelRectangle2)
+            }
+            rectangleLengthMap[rectangle2] = text2.text.length
+            squareLengthMap[square2] = label2.text.length
+            rectangleLengthAsc =  rectangleLengthMap.toList().sortedBy{ (k,v) -> v}.toMap()
+            rectangleLengthDesc = rectangleLengthMap.toList().sortedByDescending{ (k,v) -> v}.toMap()
+            squareLengthAsc =  squareLengthMap.toList().sortedBy{ (k,v) -> v}.toMap()
+            squareLengthDesc = squareLengthMap.toList().sortedByDescending{ (k,v) -> v}.toMap()
+        }
+
+        discardButton2.onAction = EventHandler {
+            rectangle2.children.apply{
+                remove(textAreaRectangleEdit2)
+                remove(saveButton2)
+                remove(discardButton2)
+                add(text2)
+                add(checkBoxRectangle2)
+                add(archiveLabelRectangle2)
+            }
+        }
+
+        val textAreaRectangleEdit3 = TextArea()
+        val saveButton3 = Button("Save").apply {
+            minWidth = 75.0
+            minHeight = 42.0
+        }
+        val discardButton3 = Button("Discard").apply {
+            minWidth = 75.0
+            minHeight = 42.0
+        }
+        rectangle3.onMouseClicked = EventHandler {
+            rectangle3.children.apply {
+                remove(text3)
+                remove(checkBoxRectangle3)
+                remove(archiveLabelRectangle3)
+                add(textAreaRectangleEdit3.apply{
+                    prefWidthProperty().bind(stage.widthProperty().subtract(220.0))
+                    maxHeight = 62.0
+                    text = text1.text
+                })
+                add(saveButton3)
+                add(discardButton3)
+            }
+        }
+
+        saveButton3.onAction = EventHandler {
+            text3.text = textAreaRectangleEdit3.text
+            label3.text = textAreaRectangleEdit3.text
+            textAreaRectangleEdit3.text = ""
+            rectangle3.children.apply {
+                remove(textAreaRectangleEdit3)
+                remove(saveButton3)
+                remove(discardButton3)
+                add(text3)
+                add(checkBoxRectangle3)
+                add(archiveLabelRectangle3)
+            }
+            rectangleLengthMap[rectangle3] = text3.text.length
+            squareLengthMap[square3] = label3.text.length
+            rectangleLengthAsc =  rectangleLengthMap.toList().sortedBy{ (k,v) -> v}.toMap()
+            rectangleLengthDesc = rectangleLengthMap.toList().sortedByDescending{ (k,v) -> v}.toMap()
+            squareLengthAsc =  squareLengthMap.toList().sortedBy{ (k,v) -> v}.toMap()
+            squareLengthDesc = squareLengthMap.toList().sortedByDescending{ (k,v) -> v}.toMap()
+        }
+
+        discardButton3.onAction = EventHandler {
+            rectangle3.children.apply{
+                remove(textAreaRectangleEdit3)
+                remove(saveButton3)
+                remove(discardButton3)
+                add(text3)
+                add(checkBoxRectangle3)
+                add(archiveLabelRectangle3)
+            }
+        }
+
+        val textAreaRectangleEdit4 = TextArea()
+        val saveButton4 = Button("Save").apply {
+            minWidth = 75.0
+            minHeight = 42.0
+        }
+        val discardButton4 = Button("Discard").apply {
+            minWidth = 75.0
+            minHeight = 42.0
+        }
+        rectangle4.onMouseClicked = EventHandler {
+            rectangle4.children.apply {
+                remove(text4)
+                remove(checkBoxRectangle4)
+                remove(archiveLabelRectangle4)
+                add(textAreaRectangleEdit1.apply{
+                    prefWidthProperty().bind(stage.widthProperty().subtract(220.0))
+                    maxHeight = 62.0
+                    text = text1.text
+                })
+                add(saveButton4)
+                add(discardButton4)
+            }
+        }
+
+        saveButton4.onAction = EventHandler {
+            text4.text = textAreaRectangleEdit4.text
+            label4.text = textAreaRectangleEdit4.text
+            textAreaRectangleEdit4.text = ""
+            rectangle1.children.apply {
+                remove(textAreaRectangleEdit4)
+                remove(saveButton4)
+                remove(discardButton4)
+                add(text4)
+                add(checkBoxRectangle4)
+                add(archiveLabelRectangle4)
+            }
+            rectangleLengthMap[rectangle4] = text4.text.length
+            squareLengthMap[square4] = label4.text.length
+            rectangleLengthAsc =  rectangleLengthMap.toList().sortedBy{ (k,v) -> v}.toMap()
+            rectangleLengthDesc = rectangleLengthMap.toList().sortedByDescending{ (k,v) -> v}.toMap()
+            squareLengthAsc =  squareLengthMap.toList().sortedBy{ (k,v) -> v}.toMap()
+            squareLengthDesc = squareLengthMap.toList().sortedByDescending{ (k,v) -> v}.toMap()
+        }
+
+        discardButton4.onAction = EventHandler {
+            rectangle4.children.apply{
+                remove(textAreaRectangleEdit4)
+                remove(saveButton4)
+                remove(discardButton4)
+                add(text4)
+                add(checkBoxRectangle4)
+                add(archiveLabelRectangle4)
+            }
+        }
+
+
         // In both views, if there are too many notes to fit height-wise, a scrollbar appears to view them.
         var scrollPane = ScrollPane(listView).apply {
             hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
@@ -616,15 +856,11 @@ class Main : Application() {
             totalRectangleNotes.clear()
             activeRectangleNotes.clear()
             rectangleLengthMap.clear()
-            rectangleLengthAsc.clear()
-            rectangleLengthDesc.clear()
 
             // square
             totalSquareNotes.clear()
             activeSquareNotes.clear()
             squareLengthMap.clear()
-            squareLengthAsc.clear()
-            squareLengthDesc.clear()
 
             // update the status bar
             statusBar.text = "$totalNotesNumber note${if (totalNotesNumber == 1) "," else "s,"} " +
@@ -632,39 +868,48 @@ class Main : Application() {
         }
 
         // Clicking on it adds a new (active) note to the system.
-        createRectangularButton.onAction = EventHandler {
-            var newCheckBox = CheckBox().apply { isSelected = false}
-            var newRectangle = HBox().apply {
-                children.add(Text(textAreaRectangle.text).apply {
-                    wrappingWidthProperty().bind(stage.widthProperty().subtract(130.0))
-                    textAlignment = TextAlignment.LEFT
-                    lineSpacing = 5.0
-                    HBox.setHgrow(this, Priority.ALWAYS)
-                })
-                children.add(CheckBox().apply{
-                    selectedProperty().bindBidirectional(newCheckBox.selectedProperty())
-                })
-                children.add(Label("Archived"))
+        createRectangleButton.onAction = EventHandler {
+            val checkBoxNew = CheckBox().apply { isSelected = false}
+            val textNew = Text(textAreaRectangleCreate.text).apply {
+                wrappingWidthProperty().bind(stage.widthProperty().subtract(130.0))
+                textAlignment = TextAlignment.LEFT
+                lineSpacing = 5.0
+                HBox.setHgrow(this, Priority.ALWAYS)
+            }
+            val labelNew = Label(textAreaRectangleCreate.text).apply{
+                isWrapText = true
+                maxWidth = 200.0
+                maxHeight = Double.MAX_VALUE
+                alignment = Pos.TOP_LEFT
+                VBox.setVgrow(this, Priority.ALWAYS)
+                textAlignment = TextAlignment.LEFT
+                lineSpacing = 5.0
+            }
+
+            val checkBoxRectangleNew = CheckBox().apply{
+                selectedProperty().bindBidirectional(checkBoxNew.selectedProperty())
+            }
+            val archiveLabelRectangleNew = Label("Archived")
+
+            val checkBoxSquareNew = CheckBox().apply{
+                selectedProperty().bindBidirectional(checkBoxNew.selectedProperty())
+            }
+            val archiveLabelSquareNew = Label("Archived")
+
+            val rectangleNew = HBox().apply {
+                children.add(textNew)
+                children.add(checkBoxRectangleNew)
+                children.add(archiveLabelRectangleNew)
                 padding = Insets(20.0)
                 spacing = 10.0
                 background = Background(
                     BackgroundFill(Color.LIGHTYELLOW, CornerRadii(10.0), Insets(10.0)))
             }
-            val newSquare = VBox().apply {
-                children.add(Label(textAreaRectangle.text).apply{
-                    isWrapText = true
-                    maxWidth = 200.0
-                    maxHeight = Double.MAX_VALUE
-                    alignment = Pos.TOP_LEFT
-                    VBox.setVgrow(this, Priority.ALWAYS)
-                    textAlignment = TextAlignment.LEFT
-                    lineSpacing = 5.0
-                })
+            val squareNew = VBox().apply {
+                children.add(labelNew)
                 children.add(HBox().apply {
-                    children.add(CheckBox().apply{
-                        selectedProperty().bindBidirectional(newCheckBox.selectedProperty())
-                    })
-                    children.add(Label("Archived"))
+                    children.add(checkBoxSquareNew)
+                    children.add(archiveLabelSquareNew)
                     spacing = 10.0
                 })
                 minWidth = 225.0
@@ -673,61 +918,118 @@ class Main : Application() {
                 maxWidth = 225.0
                 padding = Insets(20.0)
                 spacing = 10.0
-                backgroundProperty().bindBidirectional(newRectangle.backgroundProperty())
+                backgroundProperty().bindBidirectional(rectangleNew.backgroundProperty())
             }
 
-            listView.children.add(newRectangle)
-            gridView.children.add(newSquare)
+            listView.children.add(rectangleNew)
+            gridView.children.add(squareNew)
 
             ++activeNotesNumber
-            activeRectangleNotes.add(newRectangle)
-            activeSquareNotes.add(newSquare)
+            activeRectangleNotes.add(rectangleNew)
+            activeSquareNotes.add(squareNew)
 
             ++totalNotesNumber
-            totalRectangleNotes.add(newRectangle)
-            totalSquareNotes.add(newSquare)
+            totalRectangleNotes.add(rectangleNew)
+            totalSquareNotes.add(squareNew)
 
-            rectangleLengthMap[textAreaRectangle.text.length] = newRectangle
-            squareLengthMap[textAreaRectangle.text.length] = newSquare
+            rectangleLengthMap[rectangleNew] = textAreaRectangleCreate.text.length
+            squareLengthMap[squareNew] = textAreaRectangleCreate.text.length
 
-            rectangleLengthAsc =  rectangleLengthMap.toSortedMap( )
-            rectangleLengthDesc = rectangleLengthMap.toSortedMap(Comparator.reverseOrder())
+            rectangleLengthAsc =  rectangleLengthMap.toList().sortedBy{ (k,v) -> v}.toMap()
+            rectangleLengthDesc = rectangleLengthMap.toList().sortedByDescending{ (k,v) -> v}.toMap()
 
-            squareLengthAsc = squareLengthMap.toSortedMap()
-            squareLengthDesc = squareLengthMap.toSortedMap(Comparator.reverseOrder())
+            squareLengthAsc =  squareLengthMap.toList().sortedBy{ (k,v) -> v}.toMap()
+            squareLengthDesc = squareLengthMap.toList().sortedByDescending{ (k,v) -> v}.toMap()
 
             statusBar.text = "$totalNotesNumber note${if (totalNotesNumber == 1) "," else "s,"} " +
                     "$activeNotesNumber of which ${if (activeNotesNumber == 1) "is" else "are"} active"
 
-            newCheckBox.selectedProperty().addListener{ _, _, new ->
+            checkBoxNew.selectedProperty().addListener{ _, _, new ->
                 if (!new) { // not archived
-                    newRectangle.background = Background(
+                    rectangleNew.background = Background(
                         BackgroundFill(Color.LIGHTYELLOW, CornerRadii(10.0), Insets(10.0)))
                     ++activeNotesNumber
-                    activeRectangleNotes.add(newRectangle)
-                    activeSquareNotes.add(newSquare)
+                    activeRectangleNotes.add(rectangleNew)
+                    activeSquareNotes.add(squareNew)
                 } else { // archived
-                    newRectangle.background = Background(
+                    rectangleNew.background = Background(
                         BackgroundFill(Color.LIGHTGRAY, CornerRadii(10.0), Insets(10.0)))
                     --activeNotesNumber
-                    activeRectangleNotes.remove(newRectangle)
-                    activeSquareNotes.remove(newSquare)
+                    activeRectangleNotes.remove(rectangleNew)
+                    activeSquareNotes.remove(squareNew)
                     if (!showArchivedCheckBox.isSelected) {
-                        listView.children.remove(newRectangle)
-                        gridView.children.remove(newSquare)
+                        listView.children.remove(rectangleNew)
+                        gridView.children.remove(squareNew)
                     }
                 }
                 statusBar.text = "$totalNotesNumber note${if (totalNotesNumber == 1) "," else "s,"} " +
                         "$activeNotesNumber of which ${if (activeNotesNumber == 1) "is" else "are"} active"
             }
-            textAreaRectangle.text = ""
+            textAreaRectangleCreate.text = ""
+
+            // todo
+
+            val textAreaRectangleEditNew = TextArea()
+            val saveButtonNew = Button("Save").apply {
+                minWidth = 75.0
+                minHeight = 42.0
+            }
+            val discardButtonNew = Button("Discard").apply {
+                minWidth = 75.0
+                minHeight = 42.0
+            }
+            rectangleNew.onMouseClicked = EventHandler {
+                rectangleNew.children.apply {
+                    remove(textNew)
+                    remove(checkBoxRectangleNew)
+                    remove(archiveLabelRectangleNew)
+                    add(textAreaRectangleEditNew.apply{
+                        prefWidthProperty().bind(stage.widthProperty().subtract(220.0))
+                        maxHeight = 62.0
+                        text = text1.text
+                    })
+                    add(saveButtonNew)
+                    add(discardButtonNew)
+                }
+            }
+
+            saveButtonNew.onAction = EventHandler {
+                textNew.text = textAreaRectangleEditNew.text
+                labelNew.text = textAreaRectangleEditNew.text
+                textAreaRectangleEditNew.text = ""
+                rectangleNew.children.apply {
+                    remove(textAreaRectangleEditNew)
+                    remove(saveButtonNew)
+                    remove(discardButtonNew)
+                    add(textNew)
+                    add(checkBoxRectangleNew)
+                    add(archiveLabelRectangleNew)
+                }
+                rectangleLengthMap[rectangleNew] = textNew.text.length
+                squareLengthMap[squareNew] = labelNew.text.length
+                rectangleLengthAsc =  rectangleLengthMap.toList().sortedBy{ (k,v) -> v}.toMap()
+                rectangleLengthDesc = rectangleLengthMap.toList().sortedByDescending{ (k,v) -> v}.toMap()
+                squareLengthAsc =  squareLengthMap.toList().sortedBy{ (k,v) -> v}.toMap()
+                squareLengthDesc = squareLengthMap.toList().sortedByDescending{ (k,v) -> v}.toMap()
+            }
+
+            discardButtonNew.onAction = EventHandler {
+                rectangleNew.children.apply{
+                    remove(textAreaRectangleEditNew)
+                    remove(saveButtonNew)
+                    remove(discardButtonNew)
+                    add(textNew)
+                    add(checkBoxRectangleNew)
+                    add(archiveLabelRectangleNew)
+                }
+            }
         }
 
         // Clicking on it adds a new (active) note to the system.
         createSquareButton.onAction = EventHandler {
             val newCheckBox = CheckBox().apply { isSelected = false}
             val newRectangle = HBox().apply {
-                children.add(Text(textAreaSquare.text).apply {
+                children.add(Text(textAreaSquareCreate.text).apply {
                     wrappingWidthProperty().bind(stage.widthProperty().subtract(130.0))
                     textAlignment = TextAlignment.LEFT
                     lineSpacing = 5.0
@@ -743,7 +1045,7 @@ class Main : Application() {
                     BackgroundFill(Color.LIGHTYELLOW, CornerRadii(10.0), Insets(10.0)))
             }
             val newSquare = VBox().apply {
-                children.add(Label(textAreaSquare.text).apply{
+                children.add(Label(textAreaSquareCreate.text).apply{
                     isWrapText = true
                     maxWidth = 200.0
                     maxHeight = Double.MAX_VALUE
@@ -779,14 +1081,14 @@ class Main : Application() {
             totalRectangleNotes.add(newRectangle)
             totalSquareNotes.add(newSquare)
 
-            rectangleLengthMap[textAreaSquare.text.length] = newRectangle
-            squareLengthMap[textAreaSquare.text.length] = newSquare
+            rectangleLengthMap[newRectangle] = textAreaSquareCreate.text.length
+            squareLengthMap[newSquare] = textAreaSquareCreate.text.length
 
-            rectangleLengthAsc =  rectangleLengthMap.toSortedMap()
-            rectangleLengthDesc = rectangleLengthMap.toSortedMap(Comparator.reverseOrder())
+            rectangleLengthAsc =  rectangleLengthMap.toList().sortedBy{ (k,v) -> v}.toMap()
+            rectangleLengthDesc = rectangleLengthMap.toList().sortedByDescending{ (k,v) -> v}.toMap()
 
-            squareLengthAsc = squareLengthMap.toSortedMap()
-            squareLengthDesc = squareLengthMap.toSortedMap(Comparator.reverseOrder())
+            squareLengthAsc =  squareLengthMap.toList().sortedBy{ (k,v) -> v}.toMap()
+            squareLengthDesc = squareLengthMap.toList().sortedByDescending{ (k,v) -> v}.toMap()
 
             statusBar.text = "$totalNotesNumber note${if (totalNotesNumber == 1) "," else "s,"} " +
                     "$activeNotesNumber of which ${if (activeNotesNumber == 1) "is" else "are"} active"
@@ -811,7 +1113,7 @@ class Main : Application() {
                 statusBar.text = "$totalNotesNumber note${if (totalNotesNumber == 1) "," else "s,"} " +
                         "$activeNotesNumber of which ${if (activeNotesNumber == 1) "is" else "are"} active"
             }
-            textAreaSquare.text = ""
+            textAreaSquareCreate.text = ""
         }
 
         // The toolbar and the status bar are visually separated from the main views.
